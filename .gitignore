@@ -1,6 +1,9 @@
 /node_modules
 /public/hot
 /vendor
+/storage.zip
+/public.zip
+/storage
 .env
 .env.backup
 .phpunit.result.cache
