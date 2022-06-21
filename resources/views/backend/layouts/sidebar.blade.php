@@ -1,4 +1,4 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('admin')}}">
@@ -127,7 +127,7 @@
             <i class="fas fa-comments"></i>
             <span>Reviews</span></a>
     </li>
-    
+
 
     <!-- Divider -->
     <hr class="sidebar-divider">
