@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\FileUploadTrait;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+
 class BannerController extends Controller
 {
+    use FileUploadTrait;
+    protected $folder = 'banner';
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Application|Factory|View
      */
     public function index()
     {
@@ -42,16 +49,20 @@ class BannerController extends Controller
         $this->validate($request,[
             'title'=>'string|required|max:50',
             'description'=>'string|nullable',
-            'photo'=>'string|required',
+            'photo'=>'required',
             'status'=>'required|in:active,inactive',
         ]);
         $data=$request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'));
+        }
         $slug=Str::slug($request->title);
         $count=Banner::where('slug',$slug)->count();
         if($count>0){
             $slug=$slug.'-'.date('ymdis').'-'.rand(0,999);
         }
         $data['slug']=$slug;
+        $data['photo']=$this->image_name;
         // return $slug;
         $status=Banner::create($data);
         if($status){

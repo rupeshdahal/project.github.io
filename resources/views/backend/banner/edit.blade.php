@@ -5,8 +5,8 @@
 <div class="card">
     <h5 class="card-header">Edit Banner</h5>
     <div class="card-body">
-      <form method="post" action="{{route('banner.update',$banner->id)}}">
-        @csrf 
+      <form method="post" enctype="multipart/form-data" action="{{route('banner.update',$banner->id)}}">
+        @csrf
         @method('PATCH')
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">Title <span class="text-danger">*</span></label>
@@ -27,19 +27,18 @@
         <div class="form-group">
         <label for="inputPhoto" class="col-form-label">Photo <span class="text-danger">*</span></label>
         <div class="input-group">
-            <span class="input-group-btn">
-                <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
-                <i class="fa fa-picture-o"></i> Choose
-                </a>
-            </span>
-          <input id="thumbnail" class="form-control" type="text" name="photo" value="{{$banner->photo}}">
+          <input id="photo" class="form-control" type="file" name="photo">
         </div>
         <div id="holder" style="margin-top:15px;max-height:100px;"></div>
           @error('photo')
           <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
-        
+          @if($banner->photo)
+              <p>Existing Image</p>
+              <img src="{{get_image_url('banner',$banner->photo)}}" height="160" width="160" alt="">
+          @endif
+
         <div class="form-group">
           <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
           <select name="status" class="form-control">
