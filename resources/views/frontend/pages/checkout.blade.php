@@ -376,14 +376,8 @@
                                                 @endif
                                             </li>
 
-                                            @if(session('coupon'))
-                                            <li class="coupon_price" data-price="{{session('coupon')['value']}}">You Save<span>${{number_format(session('coupon')['value'],2)}}</span></li>
-                                            @endif
                                             @php
                                                 $total_amount=Helper::totalCartPrice();
-                                                if(session('coupon')){
-                                                    $total_amount=$total_amount-session('coupon')['value'];
-                                                }
                                             @endphp
                                             @if(session('coupon'))
                                                 <li class="last"  id="order_total_price">Total<span>${{number_format($total_amount,2)}}</span></li>

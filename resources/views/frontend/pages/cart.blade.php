@@ -106,9 +106,9 @@
 								<div class="left">
 									<div class="coupon">
 									<form action="{{route('coupon-store')}}" method="POST">
-											@csrf
-											<input name="code" placeholder="Enter Your Coupon">
-											<button class="btn">Apply</button>
+{{--											@csrf--}}
+{{--											<input name="code" placeholder="Enter Your Coupon">--}}
+{{--											<button class="btn">Apply</button>--}}
 										</form>
 									</div>
 									{{-- <div class="checkbox">`

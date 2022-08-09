@@ -91,10 +91,7 @@ Route::post('/coupon-store','CouponController@couponStore')->name('coupon-store'
 
 Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::get('/','AdminController@index')->name('admin');
-    Route::get('/file-manager',function(){
-        return view('backend.layouts.file-manager');
-    })->name('file-manager');
-    // user route
+
     Route::resource('users','UsersController');
     // Banner
     Route::resource('banner','BannerController');
@@ -110,12 +107,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     // Ajax for sub category
     Route::post('/category/{id}/child','CategoryController@getChildByParent');
     // POST category
-    Route::resource('/post-category','PostCategoryController');
-    // Post tag
-    Route::resource('/post-tag','PostTagController');
-    // Post
-    Route::resource('/post','PostController');
-    // Message
+
     Route::resource('/message','MessageController');
     Route::get('/message/five','MessageController@messageFive')->name('messages.five');
 
