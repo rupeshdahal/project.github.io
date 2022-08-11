@@ -36,15 +36,15 @@
         </a>
       </li>
 
-      <!-- Nav Item - Alerts -->
-      <li class="nav-item dropdown no-arrow mx-1">
-       @include('backend.notification.show')
-      </li>
+{{--      <!-- Nav Item - Alerts -->--}}
+{{--      <li class="nav-item dropdown no-arrow mx-1">--}}
+{{--       @include('backend.notification.show')--}}
+{{--      </li>--}}
 
-      <!-- Nav Item - Messages -->
-      <li class="nav-item dropdown no-arrow mx-1" id="messageT" data-url="{{route('messages.five')}}">
-        @include('backend.message.message')
-      </li>
+{{--      <!-- Nav Item - Messages -->--}}
+{{--      <li class="nav-item dropdown no-arrow mx-1" id="messageT" data-url="{{route('messages.five')}}">--}}
+{{--        @include('backend.message.message')--}}
+{{--      </li>--}}
 
       <div class="topbar-divider d-none d-sm-block"></div>
 
