@@ -24,12 +24,13 @@ trait FileUploadTrait
      */
 
 
-    public function uploadImage($image, $image_name = null){
+    public function uploadImage($image, $image_name = null,$folder){
 
         if($image){
 
-            $folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
+            $folder_path = 'images'.DIRECTORY_SEPARATOR.$folder??$this->folder;
             $this->image_name = (time().mt_rand(4100, 9999).'_'.$image->getClientOriginalName());
+
 
             //create folder if not exist
             if(!file_exists($folder_path)){

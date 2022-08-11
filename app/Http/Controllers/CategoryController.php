@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+
+
+    use FileUploadTrait;
+    protected $folder = 'category';
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -23,7 +29,7 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -35,7 +41,7 @@ class CategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -43,12 +49,16 @@ class CategoryController extends Controller
         $this->validate($request,[
             'title'=>'string|required',
             'summary'=>'string|nullable',
-            'photo'=>'string|nullable',
             'status'=>'required|in:active,inactive',
             'is_parent'=>'sometimes|in:1',
             'parent_id'=>'nullable|exists:categories,id',
         ]);
         $data= $request->all();
+
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'));
+            $data['photo']=$this->image_name;
+        }
         $slug=Str::slug($request->title);
         $count=Category::where('slug',$slug)->count();
         if($count>0){
@@ -56,7 +66,7 @@ class CategoryController extends Controller
         }
         $data['slug']=$slug;
         $data['is_parent']=$request->input('is_parent',0);
-        // return $data;   
+        // return $data;
         $status=Category::create($data);
         if($status){
             request()->session()->flash('success','Category successfully added');
@@ -73,7 +83,7 @@ class CategoryController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -84,7 +94,7 @@ class CategoryController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -98,7 +108,7 @@ class CategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -107,12 +117,16 @@ class CategoryController extends Controller
         $this->validate($request,[
             'title'=>'string|required',
             'summary'=>'string|nullable',
-            'photo'=>'string|nullable',
             'status'=>'required|in:active,inactive',
             'is_parent'=>'sometimes|in:1',
             'parent_id'=>'nullable|exists:categories,id',
         ]);
         $data= $request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'),$category->photo);
+            $data['photo'] = $this->image_name;
+
+        }
         $data['is_parent']=$request->input('is_parent',0);
         // return $data;
         $status=$category->fill($data)->save();
@@ -129,7 +143,7 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -137,7 +151,7 @@ class CategoryController extends Controller
         $child_cat_id=Category::where('parent_id',$id)->pluck('id');
         // return $child_cat_id;
         $status=$category->delete();
-        
+
         if($status){
             if(count($child_cat_id)>0){
                 Category::shiftChild($child_cat_id);

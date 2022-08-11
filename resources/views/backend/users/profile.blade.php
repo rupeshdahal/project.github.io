@@ -23,8 +23,8 @@
                 <div class="card">
                     <div class="image">
                         @if($profile->photo)
-                        <img class="card-img-top img-fluid roundend-circle mt-4" style="border-radius:50%;height:80px;width:80px;margin:auto;" src="{{$profile->photo}}" alt="profile picture">
-                        @else 
+                        <img class="card-img-top img-fluid roundend-circle mt-4" style="border-radius:50%;height:80px;width:80px;margin:auto;" src="{{get_image_url('user',$profile->photo)}}" alt="profile picture">
+                        @else
                         <img class="card-img-top img-fluid roundend-circle mt-4" style="border-radius:50%;height:80px;width:80px;margin:auto;" src="{{asset('backend/img/avatar.png')}}" alt="profile picture">
                         @endif
                     </div>
@@ -36,7 +36,7 @@
                   </div>
             </div>
             <div class="col-md-8">
-                <form class="border px-4 pt-2 pb-3" method="POST" action="{{route('profile-update',$profile->id)}}">
+                <form class="border px-4 pt-2 pb-3" enctype="multipart/form-data" method="POST" action="{{route('profile-update',$profile->id)}}">
                     @csrf
                     <div class="form-group">
                         <label for="inputTitle" class="col-form-label">Name</label>
@@ -45,7 +45,7 @@
                       <span class="text-danger">{{$message}}</span>
                       @enderror
                       </div>
-              
+
                       <div class="form-group">
                           <label for="inputEmail" class="col-form-label">Email</label>
                         <input id="inputEmail" disabled type="email" name="email" placeholder="Enter email"  value="{{$profile->email}}" class="form-control">
@@ -53,21 +53,17 @@
                         <span class="text-danger">{{$message}}</span>
                         @enderror
                       </div>
-              
-                      <div class="form-group">
-                      <label for="inputPhoto" class="col-form-label">Photo</label>
-                      <div class="input-group">
-                          <span class="input-group-btn">
-                              <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
-                              <i class="fa fa-picture-o"></i> Choose
-                              </a>
-                          </span>
-                          <input id="thumbnail" class="form-control" type="text" name="photo" value="{{$profile->photo}}">
-                      </div>
+
+                    <div class="form-group">
+                        <label for="inputPhoto" class="col-form-label">Profile Image <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input id="photo" class="form-control" type="file" name="photo">
+                        </div>
                         @error('photo')
                         <span class="text-danger">{{$message}}</span>
                         @enderror
-                      </div>
+                    </div>
+
                       <div class="form-group">
                           <label for="role" class="col-form-label">Role</label>
                           <select name="role" class="form-control">
@@ -123,7 +119,7 @@
         font-size: 14px;
         padding-right:8px;
     }
-  </style> 
+  </style>
 
 @push('scripts')
 <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>

@@ -227,7 +227,7 @@ if (!function_exists('formatNPR')) {
 
 if (! function_exists('get_image_url') ) :
 
-    function get_image_url ( $folder, $imageName ): string
+    function get_image_url ($folder, $imageName ): string
     {
         $filePath = 'images' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . $imageName;
         if (file_exists(public_path(). DIRECTORY_SEPARATOR . $filePath)) {

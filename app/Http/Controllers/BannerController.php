@@ -55,6 +55,7 @@ class BannerController extends Controller
         $data=$request->all();
         if ($request->file('photo')){
             $this->uploadImage($request->file('photo'));
+            $data['photo']=$this->image_name;
         }
         $slug=Str::slug($request->title);
         $count=Banner::where('slug',$slug)->count();
@@ -62,7 +63,7 @@ class BannerController extends Controller
             $slug=$slug.'-'.date('ymdis').'-'.rand(0,999);
         }
         $data['slug']=$slug;
-        $data['photo']=$this->image_name;
+
         // return $slug;
         $status=Banner::create($data);
         if($status){
@@ -110,10 +111,16 @@ class BannerController extends Controller
         $this->validate($request,[
             'title'=>'string|required|max:50',
             'description'=>'string|nullable',
-            'photo'=>'string|required',
+//            'photo'=>'string|required',
             'status'=>'required|in:active,inactive',
         ]);
         $data=$request->all();
+
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'),$banner->photo);
+            $data['photo'] = $this->image_name;
+
+        }
         // $slug=Str::slug($request->title);
         // $count=Banner::where('slug',$slug)->count();
         // if($count>0){

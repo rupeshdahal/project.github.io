@@ -5,8 +5,8 @@
 <div class="card">
     <h5 class="card-header">Edit User</h5>
     <div class="card-body">
-      <form method="post" action="{{route('users.update',$user->id)}}">
-        @csrf 
+      <form method="post" enctype="multipart/form-data" action="{{route('users.update',$user->id)}}">
+        @csrf
         @method('PATCH')
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">Name</label>
@@ -32,22 +32,20 @@
           @enderror
         </div> --}}
 
-        <div class="form-group">
-        <label for="inputPhoto" class="col-form-label">Photo</label>
-        <div class="input-group">
-            <span class="input-group-btn">
-                <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
-                <i class="fa fa-picture-o"></i> Choose
-                </a>
-            </span>
-            <input id="thumbnail" class="form-control" type="text" name="photo" value="{{$user->photo}}">
-        </div>
-        <img id="holder" style="margin-top:15px;max-height:100px;">
-          @error('photo')
-          <span class="text-danger">{{$message}}</span>
-          @enderror
-        </div>
-        @php 
+          <div class="form-group">
+              <label for="inputPhoto" class="col-form-label">Photo <span class="text-danger">*</span></label>
+              <div class="input-group">
+                  <input id="photo" class="form-control" type="file" name="photo">
+              </div>
+              @error('photo')
+              <span class="text-danger">{{$message}}</span>
+              @enderror
+          </div>
+          @if($user->photo)
+              <p>Existing Image</p>
+              <img src="{{get_image_url('user',$user->photo)}}" height="160" width="160" alt="">
+          @endif
+        @php
         $roles=DB::table('users')->select('role')->where('id',$user->id)->get();
         // dd($roles);
         @endphp

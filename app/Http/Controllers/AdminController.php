@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use App\Models\Settings;
 use App\User;
@@ -11,6 +12,8 @@ use Carbon\Carbon;
 use Spatie\Activitylog\Models\Activity;
 class AdminController extends Controller
 {
+    use FileUploadTrait;
+    protected $folder ='setting';
     public function index(){
         $data = User::select(\DB::raw("COUNT(*) as count"), \DB::raw("DAYNAME(created_at) as day_name"), \DB::raw("DAY(created_at) as day"))
         ->where('created_at', '>', Carbon::today()->subDay(6))
@@ -36,6 +39,11 @@ class AdminController extends Controller
         // return $request->all();
         $user=User::findOrFail($id);
         $data=$request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'),$user->photo,'user');
+            $data['photo'] = $this->image_name;
+
+        }
         $status=$user->fill($data)->save();
         if($status){
             request()->session()->flash('success','Successfully updated your profile');
@@ -56,7 +64,6 @@ class AdminController extends Controller
         $this->validate($request,[
             'short_des'=>'required|string',
             'description'=>'required|string',
-            'photo'=>'required',
             'logo'=>'required',
             'address'=>'required|string',
             'email'=>'required|email',
@@ -65,6 +72,11 @@ class AdminController extends Controller
         $data=$request->all();
         // return $data;
         $settings=Settings::first();
+        if ($request->file('logo')){
+            $this->uploadImage($request->file('logo'),$settings->logo);
+            $data['logo'] = $this->image_name;
+
+        }
         // return $settings;
         $status=$settings->fill($data)->save();
         if($status){
@@ -86,9 +98,9 @@ class AdminController extends Controller
             'new_password' => ['required'],
             'new_confirm_password' => ['same:new_password'],
         ]);
-   
+
         User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
-   
+
         return redirect()->route('admin')->with('success','Password successfully changed');
     }
 

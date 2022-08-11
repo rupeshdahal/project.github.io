@@ -2,37 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+
+    use FileUploadTrait;
+    protected $folder = 'product';
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         $products=Product::getAllProduct();
-        // return $products;
         return view('backend.product.index')->with('products',$products);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
         $brand=Brand::get();
         $category=Category::where('is_parent',1)->get();
-        // return $category;
         return view('backend.product.create')->with('categories',$category)->with('brands',$brand);
     }
 
@@ -40,7 +43,7 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -49,7 +52,6 @@ class ProductController extends Controller
             'title'=>'string|required',
             'summary'=>'string|required',
             'description'=>'string|nullable',
-            'photo'=>'string|required',
             'size'=>'nullable',
             'stock'=>"required|numeric",
             'cat_id'=>'required|exists:categories,id',
@@ -63,6 +65,11 @@ class ProductController extends Controller
         ]);
 
         $data=$request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'));
+            $data['photo'] = $this->image_name;
+
+        }
         $slug=Str::slug($request->title);
         $count=Product::where('slug',$slug)->count();
         if($count>0){
@@ -94,7 +101,7 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -105,7 +112,7 @@ class ProductController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -124,7 +131,7 @@ class ProductController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -133,7 +140,6 @@ class ProductController extends Controller
             'title'=>'string|required',
             'summary'=>'string|required',
             'description'=>'string|nullable',
-            'photo'=>'string|required',
             'size'=>'nullable',
             'stock'=>"required|numeric",
             'cat_id'=>'required|exists:categories,id',
@@ -147,6 +153,11 @@ class ProductController extends Controller
         ]);
 
         $data=$request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'),$product->photo);
+            $data['photo'] = $this->image_name;
+
+        }
         $data['is_featured']=$request->input('is_featured',0);
         $size=$request->input('size');
         if($size){
@@ -170,13 +181,13 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
         $product=Product::findOrFail($id);
         $status=$product->delete();
-        
+
         if($status){
             request()->session()->flash('success','Product successfully deleted');
         }

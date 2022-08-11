@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Traits\FileUploadTrait;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\User;
 class UsersController extends Controller
 {
+    use FileUploadTrait;
+    protected $folder = 'user';
     /**
      * Display a listing of the resource.
      *
@@ -43,10 +46,14 @@ class UsersController extends Controller
             'password'=>'string|required',
             'role'=>'required|in:admin,user',
             'status'=>'required|in:active,inactive',
-            'photo'=>'nullable|string',
         ]);
         // dd($request->all());
         $data=$request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'));
+            $data['photo'] = $this->image_name;
+
+        }
         $data['password']=Hash::make($request->password);
         // dd($data);
         $status=User::create($data);
@@ -100,12 +107,14 @@ class UsersController extends Controller
             'email'=>'string|required',
             'role'=>'required|in:admin,user',
             'status'=>'required|in:active,inactive',
-            'photo'=>'nullable|string',
         ]);
         // dd($request->all());
         $data=$request->all();
-        // dd($data);
-        
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'),$user->photo);
+            $data['photo'] = $this->image_name;
+        }
+
         $status=$user->fill($data)->save();
         if($status){
             request()->session()->flash('success','Successfully updated');
