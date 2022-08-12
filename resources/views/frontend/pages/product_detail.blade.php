@@ -11,7 +11,7 @@
 	<meta property="og:url" content="{{route('product-detail',$product_detail->slug)}}">
 	<meta property="og:type" content="article">
 	<meta property="og:title" content="{{$product_detail->title}}">
-	<meta property="og:image" content="{{$product_detail->photo}}">
+	<meta property="og:image" content="{{get_image_url('product',$product_detail->photo)}}">
 	<meta property="og:description" content="{{$product_detail->description}}">
 @endsection
 @section('title','e-shop || PRODUCT DETAIL')
@@ -51,8 +51,8 @@
 													// dd($photo);
 													@endphp
 													@foreach($photo as $data)
-														<li data-thumb="{{$data}}" rel="adjustX:10, adjustY:">
-															<img src="{{$data}}" alt="{{$data}}">
+														<li data-thumb="{{get_image_url('product',$data)}}" rel="adjustX:10, adjustY:">
+															<img src="{{get_image_url('product',$data)}}" alt="{{$data}}">
 														</li>
 													@endforeach
 												</ul>

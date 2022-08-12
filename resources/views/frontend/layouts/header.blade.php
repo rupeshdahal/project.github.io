@@ -50,7 +50,7 @@
                         @php
                             $settings=DB::table('settings')->get();
                         @endphp
-                        <a href="{{route('home')}}"><img src="@foreach($settings as $data) {{$data->logo}} @endforeach" width="200" height="200" alt="logo"></a>
+                        <a href="{{route('home')}}"><img src="@foreach($settings as $data) {{get_image_url('setting',$data->logo)}} @endforeach" width="100" height="100" alt="logo"></a>
                     </div>
                     <!--/ End Logo -->
                     <!-- Search Form -->

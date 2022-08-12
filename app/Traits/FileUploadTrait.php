@@ -24,11 +24,12 @@ trait FileUploadTrait
      */
 
 
-    public function uploadImage($image, $image_name = null,$folder){
+    public function uploadImage($image, $image_name = null,$folder = null){
 
         if($image){
 
-            $folder_path = 'images'.DIRECTORY_SEPARATOR.$folder??$this->folder;
+            $folderName = $folder ?? $this->folder;
+            $folder_path = 'images'.DIRECTORY_SEPARATOR.$folderName;
             $this->image_name = (time().mt_rand(4100, 9999).'_'.$image->getClientOriginalName());
 
 

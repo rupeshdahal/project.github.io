@@ -8,8 +8,11 @@
 					<div class="col-lg-5 col-md-6 col-12">
 						<!-- Single Widget -->
 						<div class="single-footer about">
+                            @php
+                                $settings=DB::table('settings')->get();
+                            @endphp
 							<div class="logo">
-								<a href="{{url('/')}}"><img src="{{asset('backend/img/logo2.png')}}" alt="#"></a>
+								<a href="{{url('/')}}"><img src="@foreach($settings as $data) {{get_image_url('setting',$data->logo)}} @endforeach" height="150" width="100" alt="#"></a>
 							</div>
 							@php
 								$settings=DB::table('settings')->get();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use App\User;
 use App\Models\Order;
@@ -12,6 +13,8 @@ use Hash;
 
 class HomeController extends Controller
 {
+    use FileUploadTrait;
+    protected $folder ='user';
     /**
      * Create a new controller instance.
      *
@@ -43,6 +46,10 @@ class HomeController extends Controller
         // return $request->all();
         $user=User::findOrFail($id);
         $data=$request->all();
+        if ($request->file('photo')){
+            $this->uploadImage($request->file('photo'),$user->photo);
+            $data['photo'] = $this->image_name;
+        }
         $status=$user->fill($data)->save();
         if($status){
             request()->session()->flash('success','Successfully updated your profile');
@@ -220,11 +227,11 @@ class HomeController extends Controller
             'new_password' => ['required'],
             'new_confirm_password' => ['same:new_password'],
         ]);
-   
+
         User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
-   
+
         return redirect()->route('user')->with('success','Password successfully changed');
     }
 
-    
+
 }

@@ -13,7 +13,7 @@
         <div class="carousel-inner" role="listbox">
                 @foreach($banners as $key=>$banner)
                 <div class="carousel-item {{(($key==0)? 'active' : '')}}">
-                    <img class="first-slide" src="{{$banner->photo}}" alt="First slide">
+                    <img class="first-slide" src="{{get_image_url('banner',$banner->photo)}}" alt="First slide">
                     <div class="carousel-caption d-none d-md-block text-left">
                         <h1 class="wow fadeInDown">{{$banner->title}}</h1>
                         <p>{!! html_entity_decode($banner->description) !!}</p>
@@ -49,7 +49,7 @@
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="single-banner">
                                 @if($cat->photo)
-                                    <img src="{{$cat->photo}}" alt="{{$cat->photo}}">
+                                    <img src="{{get_image_url('category',$cat->photo)}}" alt="{{$cat->photo}}">
                                 @else
                                     <img src="https://via.placeholder.com/600x370" alt="#">
                                 @endif
@@ -114,8 +114,8 @@
                                                     $photo=explode(',',$product->photo);
                                                 // dd($photo);
                                                 @endphp
-                                                <img class="default-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
-                                                <img class="hover-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                                <img class="default-img" src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
+                                                <img class="hover-img" src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
                                                 @if($product->stock<=0)
                                                     <span class="out-of-stock">Sale out</span>
                                                 @elseif($product->condition=='new')
@@ -178,7 +178,7 @@
                             @php
                                 $photo=explode(',',$data->photo);
                             @endphp
-                            <img src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                            <img src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
                             <div class="content">
                                 <p>{{$data->cat_info['title']}}</p>
                                 <h3>{{$data->title}} <br>Up to<span> {{$data->discount}}%</span></h3>
@@ -217,8 +217,8 @@
                                         $photo=explode(',',$product->photo);
                                     // dd($photo);
                                     @endphp
-                                    <img class="default-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
-                                    <img class="hover-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                    <img class="default-img" src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
+                                    <img class="hover-img" src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
                                     {{-- <span class="out-of-stock">Hot</span> --}}
                                 </a>
                                 <div class="button-head">
@@ -327,7 +327,7 @@
                                                 @endphp
                                                 @foreach($photo as $data)
                                                     <div class="single-slider">
-                                                        <img src="{{$data}}" alt="{{$data}}">
+                                                        <img src="{{get_image_url('product',$data)}}" alt="{{$data}}">
                                                     </div>
                                                 @endforeach
                                             </div>
