@@ -17,12 +17,12 @@
 
         <div class="form-group">
           <label for="price" class="col-form-label">Price <span class="text-danger">*</span></label>
-        <input id="price" type="number" name="price" placeholder="Enter price"  value="{{old('price')}}" class="form-control">
+        <input id="price" type="number" name="price" min="0" placeholder="Enter price"  value="{{old('price')}}" class="form-control">
         @error('price')
         <span class="text-danger">{{$message}}</span>
         @enderror
         </div>
-        
+
         <div class="form-group">
           <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
           <select name="status" class="form-control">

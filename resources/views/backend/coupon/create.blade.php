@@ -28,12 +28,12 @@
 
         <div class="form-group">
             <label for="inputTitle" class="col-form-label">Value <span class="text-danger">*</span></label>
-            <input id="inputTitle" type="number" name="value" placeholder="Enter Coupon value"  value="{{old('value')}}" class="form-control">
+            <input id="inputTitle" type="number" min="0" name="value" placeholder="Enter Coupon value"  value="{{old('value')}}" class="form-control">
             @error('value')
             <span class="text-danger">{{$message}}</span>
             @enderror
         </div>
-        
+
         <div class="form-group">
           <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
           <select name="status" class="form-control">
