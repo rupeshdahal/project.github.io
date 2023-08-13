@@ -12,3 +12,9 @@
         {{session('error')}}
     </div>
 @endif
+
+{{--@notverified--}}
+{{--    <div class="alert alert-warning show text-center">--}}
+{{--        You need to verify your email address before order any products.--}}
+{{--    </div>--}}
+{{--@endnotverified--}}

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes(['register'=>false]);
+Auth::routes(['verify' => true]);
+Route::get('/email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 Route::get('user/login','FrontendController@login')->name('login.form');
 Route::post('user/login','FrontendController@loginSubmit')->name('login.submit');
@@ -48,7 +50,7 @@ Route::post('cart-update','CartController@cartUpdate')->name('cart.update');
 Route::get('/cart',function(){
     return view('frontend.pages.cart');
 })->name('cart');
-Route::get('/checkout','CartController@checkout')->name('checkout')->middleware('user');
+Route::get('/checkout','CartController@checkout')->name('checkout')->middleware('user')->middleware('verified');
 // Wishlist
 Route::get('/wishlist',function(){
     return view('frontend.pages.wishlist');
@@ -125,15 +127,8 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 
 
 
-
-
-
-
-
-
-
 // User section start
-Route::group(['prefix'=>'/user','middleware'=>['user']],function(){
+Route::group(['prefix'=>'/user','middleware'=>['user','verified']],function(){
     Route::get('/','HomeController@index')->name('user');
      // Profile
      Route::get('/profile','HomeController@profile')->name('user-profile');

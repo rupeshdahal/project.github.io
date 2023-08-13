@@ -9,8 +9,11 @@ use App\Models\PostCategory;
 use App\Models\Post;
 use App\Models\Cart;
 use App\Models\Brand;
+use App\Notifications\NewUserRegistered;
 use App\User;
 use Auth;
+use Illuminate\Support\Facades\Log;
+use PHPUnit\Util\Exception;
 use Session;
 use Newsletter;
 use DB;
@@ -373,15 +376,25 @@ class FrontendController extends Controller
         return view('frontend.pages.register');
     }
     public function registerSubmit(Request $request){
-        // return $request->all();
         $this->validate($request,[
             'name'=>'string|required|min:2',
             'email'=>'string|required|unique:users,email',
             'password'=>'required|min:6|confirmed',
         ]);
         $data=$request->all();
-        // dd($data);
-        $check=$this->create($data);
+        try {
+            DB::beginTransaction();
+            $check=$this->create($data);
+            if ($check){
+                Auth::login($check);
+                $check->notify(new NewUserRegistered($check));
+            }
+            DB::commit();
+        }catch (Exception $exception){
+            DB::rollBack();
+            Log::info($exception->getMessage());
+        }
+
         Session::put('user',$data['email']);
         if($check){
             request()->session()->flash('success','Successfully registered');

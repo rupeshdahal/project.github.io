@@ -140,7 +140,11 @@
 										@endif
 									</ul>
 									<div class="button5">
-										<a href="{{route('checkout')}}" class="btn">Checkout</a>
+                                        @notverified
+										<code class="m-3">Verify email first to checkout </code>
+                                        @else
+                                            <a href="{{route('checkout')}}" class="btn">Checkout</a>
+                                            @endnotverified
 										<a href="{{route('product-grids')}}" class="btn">Continue shopping</a>
 									</div>
 								</div>
