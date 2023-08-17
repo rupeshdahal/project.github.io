@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Traits\FileUploadTrait;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
@@ -19,12 +22,52 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Application|Factory|Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products=Product::getAllProduct();
-        return view('backend.product.index')->with('products',$products);
+        $query = Product::with(['cat_info', 'sub_cat_info'])->orderBy('id', 'desc');
+
+        if ($request->get('title')) {
+            $query->where('title', 'like', '%' . $request->input('title') . '%');
+        }
+
+        if ($request->get('cat_id')) {
+            $query->where('cat_id', $request->input('cat_id'));
+        }
+
+        if ($request->get('size')) {
+            $query->where('size', $request->input('size'));
+        }
+
+        if ($request->get('is_featured')) {
+            $query->where('is_featured', $request->input('is_featured'));
+        }
+
+        if ($request->get('brand_id')) {
+            $query->where('brand_id', $request->input('brand_id'));
+        }
+
+        if ($request->get('condition')) {
+            $query->where('condition', $request->input('condition'));
+        }
+
+        if ($request->get('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->get('from_price')) {
+            $query->where('price', '>=', $request->input('from_price'));
+        }
+
+        if ($request->get('to_price')) {
+            $query->where('price', '<=', $request->input('to_price'));
+        }
+
+        $products = $query->paginate(10);
+        $brand=Brand::get();
+        $category=Category::where('is_parent',1)->get();
+        return view('backend.product.index')->with('products',$products)->with('categories',$category)->with('brands',$brand);
     }
 
     /**

@@ -1,5 +1,7 @@
 @extends('backend.layouts.master')
-
+@push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+@endpush
 @section('main-content')
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
@@ -13,6 +15,86 @@
       <a href="{{route('product.create')}}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
     </div>
     <div class="card-body">
+        <div class="card-header">
+            <form action="">
+                <h3>Filter</h3>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputTitle" class="col-form-label">Title <span class="text-danger">*</span></label>
+                        <input id="inputTitle" type="text" name="title" placeholder="Enter title" value="{{ request()->get('title') }}" class="form-control">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="cat_id">Category <span class="text-danger">*</span></label>
+                        <select name="cat_id" id="cat_id" class="form-control">
+                            <option value="">--Select any category--</option>
+                            @foreach($categories as $key => $cat_data)
+                                <option value="{{ $cat_data->id }}" {{ request()->get('cat_id') == $cat_data->id ? 'selected' : '' }}>{{ $cat_data->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputSize" class="col-form-label">Size <span class="text-danger">*</span></label>
+                        <select name="size" class="form-control" data-live-search="true">
+                            <option value="">--Select any size--</option>
+                            <option value="S" {{ request()->get('size') === 'S' ? 'selected' : '' }}>Small (S)</option>
+                            <option value="M" {{ request()->get('size') === 'M' ? 'selected' : '' }}>Medium (M)</option>
+                            <option value="L" {{ request()->get('size') === 'L' ? 'selected' : '' }}>Large (L)</option>
+                            <option value="XL" {{ request()->get('size') === 'XL' ? 'selected' : '' }}>Extra Large (XL)</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputTitle" class="col-form-label">Is Featured <span class="text-danger">*</span></label>
+                        <select name="is_featured"  class="form-control" id="">
+                            <option value="">All</option>
+                                <option value="1"{{ request()->get('is_featured') == 1 ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ request()->has('is_featured') === 0 ? 'selected' : '' }}>No</option>
+
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputBrand" class="col-form-label">Brand <span class="text-danger">*</span></label>
+                        <select name="brand_id" class="form-control">
+                            <option value="">--Select Brand--</option>
+                            @foreach($brands as $brand)
+                                <option value="{{$brand->id}}"  {{ request()->get('brand_id') == $brand->id ? 'selected' : '' }}>{{$brand->title}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="condition">Condition</label>
+                        <select name="condition" class="form-control">
+                            <option value="">--Select Condition--</option>
+                            <option value="default">Default</option>
+                            <option value="new" {{ request()->get('condition') == 'new' ? 'selected' : '' }}>New</option>
+                            <option value="hot" {{ request()->get('condition') === 'hot' ? 'selected' : '' }}>Hot</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
+                        <select name="status" class="form-control">
+                            <option value="active" {{ request()->get('status') === 'active' ? 'selected' : '' }} >Active</option>
+                            <option value="inactive" {{ request()->get('status') === 'inactive' ? 'selected' : '' }} >Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputPrice" class="col-form-label">Price Form <span class="text-danger">*</span></label>
+                        <input id="priceFrom" type="text" name="from_price" placeholder="Price From"  value="{{request()->get('from_price')}}" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="" class="col-form-label">To <span class="text-danger">*</span></label>
+                         <input id="priceTO" type="text" name="to_price" placeholder="Price To"  value="{{request()->get('to_price')}}" class="form-control">
+                    </div>
+                    <div class="form-group col-md-2">
+
+                       <button class="btn btn-sm btn-primary mt-6" style="margin-top: 40px;" type="submit">Filter</button>
+                       <a href="{{route('product.index')}}" class="btn btn-sm btn-danger mt-6" style="margin-top: 40px;" type="reset">Reset</a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
       <div class="table-responsive">
         @if(count($products)>0)
         <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
@@ -121,6 +203,7 @@
 @push('styles')
   <link href="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
   <style>
       div.dataTables_wrapper div.dataTables_paginate{
           display: none;
