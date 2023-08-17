@@ -94,7 +94,7 @@
                                 </button>
                                     @foreach($categories as $key=>$cat)
 
-                                    <button class="btn" style="background:none;color:black;"data-filter=".{{$cat->id}}">
+                                    <button class="btn" style="background:none;color:black;" data-filter=".{{$cat->id}}">
                                         {{$cat->title}}
                                     </button>
                                     @endforeach
@@ -200,16 +200,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="section-title">
-                    <h2>Hot Item</h2>
+                    <h2>For You</h2>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="owl-carousel popular-slider">
-                    @foreach($product_lists as $product)
-                        @if($product->condition=='hot')
-                            <!-- Start Single Product -->
+                    @foreach($recommend as $product)
                         <div class="single-product">
                             <div class="product-img">
                                 <a href="{{route('product-detail',$product->slug)}}">
@@ -242,8 +240,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- End Single Product -->
-                        @endif
                     @endforeach
                 </div>
             </div>

@@ -28,6 +28,7 @@
       <data directive="@elsecannot" injection="true" prefix="&lt;?php elseif (app(\Illuminate\Contracts\Auth\Access\Gate::class)-&gt;denies(" suffix=")): ?&gt;" />
       <data directive="@elseguest" injection="true" prefix="&lt;?php elseif(auth()-&gt;guard(" suffix=")-&gt;guest()): ?&gt;" />
       <data directive="@elseif" injection="true" prefix="&lt;?php elseif(" suffix="): ?&gt;" />
+      <data directive="@elsenotverified" />
       <data directive="@empty" injection="true" prefix="&lt;?php if(empty(" suffix=")): ?&gt;" />
       <data directive="@endauth" />
       <data directive="@endcan" />
@@ -46,6 +47,7 @@
       <data directive="@endif" />
       <data directive="@endisset" />
       <data directive="@endlang" />
+      <data directive="@endnotverified" />
       <data directive="@endonce" />
       <data directive="@endphp" />
       <data directive="@endprepend" />
@@ -78,6 +80,7 @@
       <data directive="@json" injection="true" prefix="&lt;?php echo json_encode(" suffix=") ?&gt;" />
       <data directive="@lang" injection="true" prefix="&lt;?php echo app('translator')-&gt;get(" suffix="); ?&gt;" />
       <data directive="@method" injection="true" prefix="&lt;?php echo method_field(" suffix="); ?&gt;" />
+      <data directive="@notverified" />
       <data directive="@once" />
       <data directive="@overwrite" />
       <data directive="@parent" />
@@ -97,6 +100,7 @@
       <data directive="@stop" />
       <data directive="@switch" injection="true" prefix="&lt;?php switch(" suffix="): ?&gt;" />
       <data directive="@unless" injection="true" prefix="&lt;?php if (! (" suffix=")): ?&gt;" />
+      <data directive="@unlessnotverified" />
       <data directive="@unset" injection="true" prefix="&lt;?php unset(" suffix="); ?&gt;" />
       <data directive="@verbatim" />
       <data directive="@while" injection="true" prefix="&lt;?php while(" suffix="): ?&gt;" />

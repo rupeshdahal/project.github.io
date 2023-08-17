@@ -34,12 +34,15 @@ class FrontendController extends Controller
         // return $banner;
         $products=Product::where('status','active')->orderBy('id','DESC')->limit(8)->get();
         $category=Category::where('status','active')->where('is_parent',1)->orderBy('title','ASC')->get();
+
+        $recommend = $this->getRecommendations();
         // return $category;
         return view('frontend.index')
                 ->with('featured',$featured)
                 ->with('posts',$posts)
                 ->with('banners',$banners)
                 ->with('product_lists',$products)
+                ->with('recommend',$recommend)
                 ->with('category_lists',$category);
     }
 
@@ -434,6 +437,34 @@ class FrontendController extends Controller
                 request()->session()->flash('error','Already Subscribed');
                 return back();
             }
+    }
+
+    public function getRecommendations()
+    {
+        $user_id = auth()->id();
+        $userCartProducts = Cart::where('user_id', $user_id)
+            ->pluck('product_id')
+            ->toArray();
+
+        $similarUsers = Cart::whereIn('product_id', $userCartProducts)
+            ->where('user_id', '<>', $user_id)
+            ->groupBy('user_id')
+            ->orderBy(DB::raw('count(*)'), 'desc')
+            ->limit(10) // Choose a suitable number of similar users
+            ->pluck('user_id')
+            ->toArray();
+
+        $recommendedProducts = Cart::whereIn('user_id', $similarUsers)
+            ->whereNotIn('product_id', $userCartProducts)
+            ->groupBy('product_id')
+            ->orderBy(DB::raw('count(*)'), 'desc')
+            ->limit(10) // Choose a suitable number of recommendations
+            ->pluck('product_id')
+            ->toArray();
+
+        return Product::whereIn('id', $recommendedProducts)->get();
+
+
     }
 
 }
