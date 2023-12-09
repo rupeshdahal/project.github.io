@@ -450,7 +450,7 @@ class FrontendController extends Controller
             ->where('user_id', '<>', $user_id)
             ->groupBy('user_id')
             ->orderBy(DB::raw('count(*)'), 'desc')
-            ->limit(10) // Choose a suitable number of similar users
+            ->limit(10) 
             ->pluck('user_id')
             ->toArray();
 
@@ -458,7 +458,7 @@ class FrontendController extends Controller
             ->whereNotIn('product_id', $userCartProducts)
             ->groupBy('product_id')
             ->orderBy(DB::raw('count(*)'), 'desc')
-            ->limit(10) // Choose a suitable number of recommendations
+            ->limit(10)
             ->pluck('product_id')
             ->toArray();
 

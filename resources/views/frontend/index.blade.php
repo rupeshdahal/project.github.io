@@ -275,7 +275,7 @@
                                             $photo=explode(',',$product->photo);
                                             // dd($photo);
                                         @endphp
-                                        <img src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                        <img src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
                                         <a href="{{route('add-to-cart',$product->slug)}}" class="buy"><i class="fa fa-shopping-bag"></i></a>
                                     </div>
                                 </div>
