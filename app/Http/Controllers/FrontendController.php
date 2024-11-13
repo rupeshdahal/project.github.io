@@ -36,7 +36,7 @@ class FrontendController extends Controller
         $products=Product::where('status','active')->orderBy('id','DESC')->limit(8)->get();
         $category=Category::where('status','active')->where('is_parent',1)->orderBy('title','ASC')->get();
 
-        $recommend = $this->getRecommendations();
+        $forYou = $this->getRecommendations();
 
         $recommend = $this->getForYouRecommendations();
 
@@ -47,6 +47,7 @@ class FrontendController extends Controller
                 ->with('banners',$banners)
                 ->with('product_lists',$products)
                 ->with('recommend',$recommend)
+                ->with('forYou',$forYou)
                 ->with('category_lists',$category);
     }
 
@@ -505,6 +506,8 @@ class FrontendController extends Controller
         return Product::whereIn('id', $categoryRecommendations->pluck('id')
             ->merge($brandRecommendations->pluck('id')))
             ->whereNotIn('id', $multiViewedProductIds)
+            ->inRandomOrder()
+            ->limit(12)
             ->get();
     }
 
