@@ -11,6 +11,7 @@ use App\Models\Cart;
 use App\Models\Brand;
 use App\Notifications\NewUserRegistered;
 use App\User;
+use App\ViewHistory;
 use Auth;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Util\Exception;
@@ -36,6 +37,9 @@ class FrontendController extends Controller
         $category=Category::where('status','active')->where('is_parent',1)->orderBy('title','ASC')->get();
 
         $recommend = $this->getRecommendations();
+
+        $recommend = $this->getForYouRecommendations();
+
         // return $category;
         return view('frontend.index')
                 ->with('featured',$featured)
@@ -56,6 +60,9 @@ class FrontendController extends Controller
 
     public function productDetail($slug){
         $product_detail= Product::getProductBySlug($slug);
+
+        $this->storeView($product_detail);
+
         // dd($product_detail);
         return view('frontend.pages.product_detail')->with('product_detail',$product_detail);
     }
@@ -450,7 +457,7 @@ class FrontendController extends Controller
             ->where('user_id', '<>', $user_id)
             ->groupBy('user_id')
             ->orderBy(DB::raw('count(*)'), 'desc')
-            ->limit(10) 
+            ->limit(10)
             ->pluck('user_id')
             ->toArray();
 
@@ -465,6 +472,55 @@ class FrontendController extends Controller
         return Product::whereIn('id', $recommendedProducts)->get();
 
 
+    }
+    public function getForYouRecommendations()
+    {
+        $userId = auth()->id() ?? 0;
+        // Get recently viewed categories and brands for the user
+        $viewedCategories = ViewHistory::where('user_id', $userId)->pluck('category_id')->unique();
+        $viewedBrands = ViewHistory::where('user_id', $userId)->pluck('brand_id')->unique();
+
+        // Get product IDs the user has already viewed
+        $viewedProductIds = ViewHistory::where('user_id', $userId)->pluck('product_id');
+
+
+        // Fetch products in the same categories but exclude viewed products
+        $categoryRecommendations = Product::whereIn('cat_id', $viewedCategories)
+            ->orWhereIn('child_cat_id', $viewedCategories)
+            ->whereNotIn('id', $viewedProductIds)
+            ->get();
+
+        // Fetch products in the same brands but exclude viewed products
+        $brandRecommendations = Product::whereIn('brand_id', $viewedBrands)
+            ->whereNotIn('id', $viewedProductIds)
+            ->get();
+
+        // Exclude products viewed by multiple users
+        $multiViewedProductIds = ViewHistory::select('product_id')
+            ->groupBy('product_id')
+            ->havingRaw('COUNT(DISTINCT user_id) > 1')
+            ->pluck('product_id');
+
+
+        return Product::whereIn('id', $categoryRecommendations->pluck('id')
+            ->merge($brandRecommendations->pluck('id')))
+            ->whereNotIn('id', $multiViewedProductIds)
+            ->get();
+    }
+
+    private function storeView($product)
+    {
+        ViewHistory::UpdateOrCreate([
+            'user_id' => auth()->id() ?? 0,
+            'product_id' => $product->id,
+            'category_id' => $product->child_cat_id ?? $product->cat_id,
+            'brand_id' => $product->brand_id
+        ],[
+            'user_id' => auth()->id() ?? 0,
+            'product_id' => $product->id,
+            'category_id' => $product->child_cat_id ?? $product->cat_id,
+            'brand_id' => $product->brand_id
+        ]);
     }
 
 }
