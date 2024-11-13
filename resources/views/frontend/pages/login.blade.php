@@ -54,10 +54,10 @@
                                     <div class="form-group login-btn">
                                         <button class="btn" type="submit">Login</button>
                                         <a href="{{route('register.form')}}" class="btn">Register</a>
-{{--                                        OR--}}
-{{--                                        <a href="{{route('login.redirect','facebook')}}" class="btn btn-facebook"><i class="ti-facebook"></i></a>--}}
-{{--                                        <a href="{{route('login.redirect','github')}}" class="btn btn-github"><i class="ti-github"></i></a>--}}
-{{--                                        <a href="{{route('login.redirect','google')}}" class="btn btn-google"><i class="ti-google"></i></a>--}}
+                                        OR
+                                        <a href="{{route('login.redirect','facebook')}}" class="btn btn-sm btn-facebook"><i class="fa fa-facebook"></i></a>
+                                        <a href="{{route('login.redirect','google')}}" class="btn btn-sm btn-google"><i class="fa fa-google"></i></a>
+                                        <a href="{{route('login.redirect','github')}}" class="btn btn-sm btn-github"><i class="fa fa-github"></i></a>
 
                                     </div>
                                     <div class="checkbox">

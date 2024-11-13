@@ -1,5 +1,10 @@
 
 	<!-- Start Footer Area -->
+    <style>
+        .text-white span {
+            color: white !important;
+        }
+    </style>
 	<footer class="footer">
 		<!-- Footer Top -->
 		<div class="footer-top section">
@@ -17,7 +22,7 @@
 							@php
 								$settings=DB::table('settings')->get();
 							@endphp
-							<p class="text">@foreach($settings as $data) {!! $data->short_des !!} @endforeach</p>
+							<p class="text text-white">@foreach($settings as $data) {!! $data->short_des !!} @endforeach</p>
 							<p class="call">Got Question? Call us 24/7<span><a href="tel:123456789">@foreach($settings as $data) {{$data->phone}} @endforeach</a></span></p>
 						</div>
 						<!-- End Single Widget -->
