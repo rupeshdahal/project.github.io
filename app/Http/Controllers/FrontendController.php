@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\Cart;
 use App\Models\Brand;
 use App\Notifications\NewUserRegistered;
+use App\Scopes\SellerScope;
 use App\User;
 use App\ViewHistory;
 use Auth;
@@ -29,12 +30,12 @@ class FrontendController extends Controller
     }
 
     public function home(){
-        $featured=Product::where('status','active')->where('is_featured',1)->orderBy('price','DESC')->limit(2)->get();
+        $featured=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->where('is_featured',1)->orderBy('price','DESC')->limit(2)->get();
         $posts=Post::where('status','active')->orderBy('id','DESC')->limit(3)->get();
         $banners=Banner::where('status','active')->limit(3)->orderBy('id','DESC')->get();
         // return $banner;
-        $products=Product::where('status','active')->orderBy('id','DESC')->limit(8)->get();
-        $category=Category::where('status','active')->where('is_parent',1)->orderBy('title','ASC')->get();
+        $products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(8)->get();
+        $category=Category::withoutGlobalScope(SellerScope::class)->where('status','active')->where('is_parent',1)->orderBy('title','ASC')->get();
 
         $forYou = $this->getRecommendations();
 
@@ -69,28 +70,28 @@ class FrontendController extends Controller
     }
 
     public function productGrids(){
-        $products=Product::query();
+        $products=Product::query()->withoutGlobalScope(SellerScope::class);
 
         if(!empty($_GET['category'])){
             $slug=explode(',',$_GET['category']);
             // dd($slug);
-            $cat_ids=Category::select('id')->whereIn('slug',$slug)->pluck('id')->toArray();
+            $cat_ids=Category::withoutGlobalScope(SellerScope::class)->select('id')->whereIn('slug',$slug)->pluck('id')->toArray();
             // dd($cat_ids);
-            $products->whereIn('cat_id',$cat_ids);
+            $products->whereIn('cat_id',$cat_ids)->withoutGlobalScope(SellerScope::class);
             // return $products;
         }
         if(!empty($_GET['brand'])){
             $slugs=explode(',',$_GET['brand']);
-            $brand_ids=Brand::select('id')->whereIn('slug',$slugs)->pluck('id')->toArray();
+            $brand_ids=Brand::withoutGlobalScope(SellerScope::class)->select('id')->whereIn('slug',$slugs)->pluck('id')->toArray();
             return $brand_ids;
             $products->whereIn('brand_id',$brand_ids);
         }
         if(!empty($_GET['sortBy'])){
             if($_GET['sortBy']=='title'){
-                $products=$products->where('status','active')->orderBy('title','ASC');
+                $products=$products->withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('title','ASC');
             }
             if($_GET['sortBy']=='price'){
-                $products=$products->orderBy('price','ASC');
+                $products=$products->withoutGlobalScope(SellerScope::class)->orderBy('price','ASC');
             }
         }
 
@@ -100,10 +101,10 @@ class FrontendController extends Controller
             // if(isset($price[0]) && is_numeric($price[0])) $price[0]=floor(Helper::base_amount($price[0]));
             // if(isset($price[1]) && is_numeric($price[1])) $price[1]=ceil(Helper::base_amount($price[1]));
 
-            $products->whereBetween('price',$price);
+            $products->whereBetween('price',$price)->withoutGlobalScope(SellerScope::class);
         }
 
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(3)->get();
         // Sort by number
         if(!empty($_GET['show'])){
             $products=$products->where('status','active')->paginate($_GET['show']);
@@ -117,12 +118,12 @@ class FrontendController extends Controller
         return view('frontend.pages.product-grids')->with('products',$products)->with('recent_products',$recent_products);
     }
     public function productLists(){
-        $products=Product::query();
+        $products=Product::withoutGlobalScope(SellerScope::class)->query();
 
         if(!empty($_GET['category'])){
             $slug=explode(',',$_GET['category']);
             // dd($slug);
-            $cat_ids=Category::select('id')->whereIn('slug',$slug)->pluck('id')->toArray();
+            $cat_ids=Category::withoutGlobalScope(SellerScope::class)->select('id')->whereIn('slug',$slug)->pluck('id')->toArray();
             // dd($cat_ids);
             $products->whereIn('cat_id',$cat_ids)->paginate;
             // return $products;
@@ -151,7 +152,7 @@ class FrontendController extends Controller
             $products->whereBetween('price',$price);
         }
 
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(3)->get();
         // Sort by number
         if(!empty($_GET['show'])){
             $products=$products->where('status','active')->paginate($_GET['show']);
@@ -214,8 +215,8 @@ class FrontendController extends Controller
             }
     }
     public function productSearch(Request $request){
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
-        $products=Product::orwhere('title','like','%'.$request->search.'%')
+        $recent_products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $products=Product::withoutGlobalScope(SellerScope::class)->orwhere('title','like','%'.$request->search.'%')
                     ->orwhere('slug','like','%'.$request->search.'%')
                     ->orwhere('description','like','%'.$request->search.'%')
                     ->orwhere('summary','like','%'.$request->search.'%')
@@ -227,7 +228,7 @@ class FrontendController extends Controller
 
     public function productBrand(Request $request){
         $products=Brand::getProductByBrand($request->slug);
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(3)->get();
         if(request()->is('e-shop.loc/product-grids')){
             return view('frontend.pages.product-grids')->with('products',$products->products)->with('recent_products',$recent_products);
         }
@@ -239,20 +240,20 @@ class FrontendController extends Controller
     public function productCat(Request $request){
         $products=Category::getProductByCat($request->slug);
         // return $request->slug;
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(3)->get();
 
-        if(request()->is('e-shop.loc/product-grids')){
-            return view('frontend.pages.product-grids')->with('products',$products->products)->with('recent_products',$recent_products);
-        }
-        else{
-            return view('frontend.pages.product-lists')->with('products',$products->products)->with('recent_products',$recent_products);
-        }
+//        if(request()->is('e-shop.loc/product-grids')){
+//            return view('frontend.pages.product-grids')->with('products',$products->products)->with('recent_products',$recent_products);
+//        }
+//        else{
+//        }
+        return view('frontend.pages.product-lists')->with('products',$products->products)->with('recent_products',$recent_products);
 
     }
     public function productSubCat(Request $request){
         $products=Category::getProductBySubCat($request->sub_slug);
         // return $products;
-        $recent_products=Product::where('status','active')->orderBy('id','DESC')->limit(3)->get();
+        $recent_products=Product::withoutGlobalScope(SellerScope::class)->where('status','active')->orderBy('id','DESC')->limit(3)->get();
 
         if(request()->is('e-shop.loc/product-grids')){
             return view('frontend.pages.product-grids')->with('products',$products->sub_products)->with('recent_products',$recent_products);
@@ -470,7 +471,7 @@ class FrontendController extends Controller
             ->pluck('product_id')
             ->toArray();
 
-        return Product::whereIn('id', $recommendedProducts)->get();
+        return Product::withoutGlobalScope(SellerScope::class)->whereIn('id', $recommendedProducts)->get();
 
 
     }

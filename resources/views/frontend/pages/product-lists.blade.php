@@ -111,8 +111,11 @@
                                         $photo=explode(',',$product->photo);
                                     @endphp
                                     <div class="single-post first">
+{{--                                        <div class="image">--}}
+{{--                                            <img src="{{$photo[0]}}" alt="{{$photo[0]}}">--}}
+{{--                                        </div>--}}
                                         <div class="image">
-                                            <img src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                            <img src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
                                         </div>
                                         <div class="content">
                                             <h5><a href="{{route('product-detail',$product->slug)}}">{{$product->title}}</a></h5>
@@ -190,8 +193,8 @@
                                                             @php
                                                                 $photo=explode(',',$product->photo);
                                                             @endphp
-                                                            <img class="default-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
-                                                            <img class="hover-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                                            <img class="default-img" src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
+                                                            <img class="hover-img" src="{{get_image_url('product',$photo[0])}}" alt="{{$photo[0]}}">
                                                         </a>
                                                         <div class="button-head">
                                                             <div class="product-action">
@@ -261,9 +264,9 @@
                                             // dd($photo);
                                             @endphp
                                             @foreach($photo as $data)
-                                                <div class="single-slider">
-                                                    <img src="{{$data}}" alt="{{$data}}">
-                                                </div>
+                                                <li data-thumb="{{get_image_url('product',$data)}}" rel="adjustX:10, adjustY:">
+                                                    <img src="{{get_image_url('product',$data)}}" alt="{{$data}}">
+                                                </li>
                                             @endforeach
                                         </div>
                                     </div>

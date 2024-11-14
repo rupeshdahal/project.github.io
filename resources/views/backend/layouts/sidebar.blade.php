@@ -5,7 +5,11 @@
       <div class="sidebar-brand-icon rotate-n-15">
 
       </div>
-      <div class="sidebar-brand-text mx-3">Admin</div>
+        @if(auth()->user()->role == 'admin')
+            <div class="sidebar-brand-text mx-3">Admin</div>
+        @else
+            <div class="sidebar-brand-text mx-3">Seller</div>
+        @endif
     </a>
 
     <!-- Divider -->
@@ -27,19 +31,22 @@
     </div>
 
 
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-        <i class="fas fa-image"></i>
-        <span>Banners</span>
-      </a>
-      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-          <h6 class="collapse-header">Banner Options:</h6>
-          <a class="collapse-item" href="{{route('banner.index')}}">Banners</a>
-          <a class="collapse-item" href="{{route('banner.create')}}">Add Banners</a>
-        </div>
-      </div>
-    </li>
+    @if(auth()->user()->role == 'admin')
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-image"></i>
+                <span>Banners</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Banner Options:</h6>
+                    <a class="collapse-item" href="{{route('banner.index')}}">Banners</a>
+                    <a class="collapse-item" href="{{route('banner.create')}}">Add Banners</a>
+                </div>
+            </div>
+        </li>
+    @endif
     <!-- Divider -->
     <hr class="sidebar-divider">
         <!-- Heading -->
@@ -113,21 +120,23 @@
     <!-- Divider -->
 {{--    <hr class="sidebar-divider d-none d-md-block">--}}
      <!-- Heading -->
-    <div class="sidebar-heading">
-        General Settings
-    </div>
-     <!-- Users -->
-     <li class="nav-item">
-        <a class="nav-link" href="{{route('users.index')}}">
-            <i class="fas fa-users"></i>
-            <span>Users</span></a>
-    </li>
-     <!-- General settings -->
-     <li class="nav-item">
-        <a class="nav-link" href="{{route('settings')}}">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span></a>
-    </li>
+    @if(auth()->user()->role == 'admin')
+        <div class="sidebar-heading">
+            General Settings
+        </div>
+        <!-- Users -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('users.index')}}">
+                <i class="fas fa-users"></i>
+                <span>Users</span></a>
+        </li>
+        <!-- General settings -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('settings')}}">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span></a>
+        </li>
+    @endif
 
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">

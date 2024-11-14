@@ -124,6 +124,40 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::get('change-password', 'AdminController@changePassword')->name('change.password.form');
     Route::post('change-password', 'AdminController@changPasswordStore')->name('change.password');
 });
+Route::group(['prefix'=>'/seller','middleware'=>['auth','seller']],function(){
+    Route::get('/','SellerController@index')->name('seller');
+    // Brand
+    Route::resource('brand','BrandController');
+    // Profile
+    Route::get('/profile','SellerController@profile')->name('seller-profile');
+    Route::post('/profile/{id}','SellerController@profileUpdate')->name('profile-update');
+    // Category
+    Route::resource('/category','CategoryController');
+    // Product
+    Route::resource('/product','ProductController');
+    // Ajax for sub category
+    Route::post('/category/{id}/child','CategoryController@getChildByParent');
+    // POST category
+
+    Route::resource('/message','MessageController');
+    Route::get('/message/five','MessageController@messageFive')->name('messages.five');
+
+    // Order
+    Route::resource('/order','OrderController');
+    // Shipping
+    Route::resource('/shipping','ShippingController');
+    // Coupon
+    Route::resource('/coupon','CouponController');
+    // Settings
+
+    // Notification
+    Route::get('/notification/{id}','NotificationController@show')->name('seller.notification');
+    Route::get('/notifications','NotificationController@index')->name('all.notification');
+    Route::delete('/notification/{id}','NotificationController@delete')->name('notification.delete');
+    // Password Change
+    Route::get('change-password', 'SellerController@changePassword')->name('change.password.form');
+    Route::post('change-password', 'SellerController@changPasswordStore')->name('change.password');
+});
 
 
 

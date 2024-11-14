@@ -367,9 +367,9 @@
                                                 // dd($photo);
                                                 @endphp
                                                 @foreach($photo as $data)
-                                                    <div class="single-slider">
+                                                    <li data-thumb="{{get_image_url('product',$data)}}" rel="adjustX:10, adjustY:">
                                                         <img src="{{get_image_url('product',$data)}}" alt="{{$data}}">
-                                                    </div>
+                                                    </li>
                                                 @endforeach
                                             </div>
                                         </div>
